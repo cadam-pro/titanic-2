@@ -41,3 +41,17 @@ test_api:
 docker_build:
 	@echo "Building Docker image..."
 	docker build -t myapp:latest .
+
+build_gcp:
+	docker build -t $(LOCATION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/$(IMAGE_NAME):$(VERSION) .
+
+push : build_gcp
+	docker push $(LOCATION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/$(IMAGE_NAME):$(VERSION)
+
+deploy: push
+	gcloud run deploy $(IMAGE_NAME) \
+		--image $(LOCATION)-docker.pkg.dev/$(PROJECT_ID)/$(REPOSITORY)/$(IMAGE_NAME):$(VERSION) \
+		--platform managed \
+		--region $(LOCATION) \
+		--allow-unauthenticated \
+		--project $(PROJECT_ID)

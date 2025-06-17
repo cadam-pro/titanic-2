@@ -1,0 +1,11 @@
+__pycache__
+data
+demos
+mlartifacts
+mlruns
+notebooks
+titanis.egg-info
+.env
+.gitignore
+.python-version
+Makefile

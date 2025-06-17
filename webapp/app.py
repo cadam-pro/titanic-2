@@ -68,13 +68,33 @@ st.plotly_chart(fig)
 st.write("### Would you survive the Titanic?")
 
 name = st.text_input("Enter your name:", value="John Doe")
-gender = st.selectbox("Select your Gender:", options=["Male", "Female", "Other"])
+gender = st.selectbox("Select your Gender:", options=["male", "female"])
 age = st.slider("Select your Age:", min_value=0, max_value=100, value=30)
-class_ = st.selectbox("Select your Class:", options=["1st", "2nd", "3rd"])
-embarked = st.selectbox("Select your Embarked Port:", options=["Cherbourg", "Queenstown", "Southampton"])
-fare = st.selectbox("Select your Ticket Fare:", options=["Low", "Medium", "High"])
+class_ = st.selectbox("Select your Class:", options=[1, 2, 3])
+embarked_options = {
+    "Cherbourg": "C",
+    "Queenstown": "Q",
+    "Southampton": "S"
+}
+embarked = st.selectbox("Select your Embarked Port:", options=list(embarked_options.keys()))
+fare = st.slider("Select your ticket fare:", min_value=0.0, max_value=512.40, value=32.20, step=0.1)
 
 if st.button("Check if you would survive"):
-    st.write("You would have survived the Titanic!")
-    st.balloons()
-
+    params_survived = {
+                "Name": name,
+                'Sex': gender,
+                'Age': age,
+                'Pclass': class_,
+                'Embarked': embarked_options[embarked],
+                'Fare': fare
+            }
+    answer_survived = requests.get(url = f"https://myapp-923313216848.europe-west9.run.app/predict", params=params_survived)
+    # http://localhost:8080/
+    # http://127.0.0.1:8001
+    if answer_survived.json()['survived']:
+        st.write("You would have survived the Titanic!")
+        st.balloons()
+    else:
+       st.write("💀💀💀 You are dead... 💀💀💀")
+       for i in range(0, 20):
+            st.snow()

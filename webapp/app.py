@@ -1,8 +1,8 @@
 import streamlit as st
 import pandas as pd
-from titanic.data import load_data, prepare_data, upload_data
-import matplotlib.pyplot as plt
-import seaborn as sns
+# from titanic.data import load_data, prepare_data, upload_data
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 import requests
 
 st.title("Welcome to the Streamlit App")
@@ -35,33 +35,33 @@ data = {
 df = pd.DataFrame(data)
 st.dataframe(df)
 
-@st.cache_data
-def load_data_app():
-    """
-    Load the Titanic dataset.
+# @st.cache_data
+# def load_data_app():
+#     """
+#     Load the Titanic dataset.
     
-    Returns:
-        pd.DataFrame: The Titanic dataset.
-    """
-    print("Dataframe loaded successfully!")
-    return load_data()
+#     Returns:
+#         pd.DataFrame: The Titanic dataset.
+#     """
+#     print("Dataframe loaded successfully!")
+#     return load_data()
 
-df = load_data_app()
+# df = load_data_app()
 
-st.write("### Seaborn")
-f = plt.figure(figsize=(10, 6))
-sns.histplot(df['Age'], kde=True, bins=30)
-st.pyplot(f)
+# st.write("### Seaborn")
+# f = plt.figure(figsize=(10, 6))
+# sns.histplot(df['Age'], kde=True, bins=30)
+# st.pyplot(f)
 
-st.write("### Matplotlib")
-fig, ax = plt.subplots()
-ax.plot(df['Age'], df['Fare'], 'o')
-st.pyplot(fig)
+# st.write("### Matplotlib")
+# fig, ax = plt.subplots()
+# ax.plot(df['Age'], df['Fare'], 'o')
+# st.pyplot(fig)
 
-st.write('Plotly Express')
-import plotly.express as px
-fig = px.scatter(df, x='Age', y='Fare', color='Survived', title='Age vs Fare')
-st.plotly_chart(fig)
+# st.write('Plotly Express')
+# import plotly.express as px
+# fig = px.scatter(df, x='Age', y='Fare', color='Survived', title='Age vs Fare')
+# st.plotly_chart(fig)
 
 
 

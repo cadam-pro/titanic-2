@@ -4,7 +4,7 @@ demos
 mlartifacts
 mlruns
 notebooks
-titanis.egg-info
+titanic.egg-info
 .env
 .gitignore
 .python-version

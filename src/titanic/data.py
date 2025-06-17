@@ -3,36 +3,26 @@ Load, preprocess, prepare, and save the Titanic dataset.
 """
 import os
 import pandas as pd
+from prefect import task, flow
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from titanic.registry import load_model, save_model
-from titanic.params import DATA_FOLDER,NUMERIC_FEATURES,CAT_FEATURES
+from sklearn.model_selection import train_test_split
+from titanic.params import DATA_FOLDER,NUMERIC_FEATURES,CAT_FEATURES,DATA_URL
 
-
-def load_data(train: bool = True) -> pd.DataFrame:
+@task
+def load_data() -> pd.DataFrame:
     """
     Load the Titanic dataset from a CSV file.
     
     Returns:
         DataFrame: The loaded Titanic dataset.
     """
-    if not os.path.exists(DATA_FOLDER):
-        raise FileNotFoundError(f"The data folder '{DATA_FOLDER}' does not exist.")
-    # Without ternary operator
-    # if train == True : 
-    #     name = 'train'
-    # else:
-    #     name = 'test'
-    # Using ternary operator for brevity
-    name = 'train' if train else 'test'
-    df = pd.read_csv(os.path.join(DATA_FOLDER, f'{name}.csv'),index_col='PassengerId')
-    if not train :
-        y_test = pd.read_csv(os.path.join(DATA_FOLDER,"gender_submission.csv"), index_col='PassengerId')
-        df = pd.merge(df,y_test,left_index=True, right_index=True, how='left')
-    return df
-    
+    return pd.read_csv(DATA_URL,index_col='PassengerId')
+
+@task  
 def clean_data(df):
     """
     clean the Titanic dataset.
@@ -47,8 +37,8 @@ def clean_data(df):
     return    df.drop(columns=['Name', 'Ticket', 'Cabin'])\
                 .dropna()\
                 .drop_duplicates()
-        
-
+      
+@task
 def prepare_data(df:pd.DataFrame ,fit=True, survive=True) -> tuple[pd.DataFrame, pd.Series]: 
     """
     Prepare the Titanic dataset for training.
@@ -86,16 +76,26 @@ def prepare_data(df:pd.DataFrame ,fit=True, survive=True) -> tuple[pd.DataFrame,
     X_scaled = preprocessor.transform(X)
     return X_scaled, y
 
+@task
+def split_data(X, y):
+    return train_test_split(X, y, test_size=0.2, random_state=42)
 
-if __name__ == "__main__":
-    # Example usage
-    df = load_data(train=False)
+
+@flow(log_prints=True)
+def data_workflow():
+    df = load_data()
     print(df.shape)
     df = clean_data(df)
     X, y = prepare_data(df)
     print(X.head())
     print(y.head())
-    
-    # # Save the processed data
-    # X.to_csv('titanic_features.csv', index=False)
-    # y.to_csv('titanic_target.csv', index=False)
+    X_train, X_test, y_train, y_test = split_data(X, y)
+    print(X_train.shape)
+    print(X_test.shape)
+    print(y_train.shape)
+    print(y_test.shape)
+    return X_train, X_test, y_train, y_test
+
+
+if __name__ == "__main__":
+    data_workflow()

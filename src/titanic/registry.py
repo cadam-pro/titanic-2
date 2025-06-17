@@ -3,6 +3,8 @@ Save and load models, preprocessors
 """
 import os
 import pickle
+
+from prefect import task
 from titanic.params import MODEL_FOLDER
 
 def ensure_model_folder():
@@ -13,6 +15,7 @@ def ensure_model_folder():
         os.makedirs(MODEL_FOLDER+"s")
 ensure_model_folder() 
 
+@task
 def save_model(model, path: str):
     """
     Save a model to the specified path.

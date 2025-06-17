@@ -2,16 +2,18 @@
 
 """
 
-from titanic.data import load_data,clean_data,prepare_data
+from titanic.data import data_workflow
 from titanic.registry import save_model
-from titanic.train import train_model, evaluate_model
+from titanic.train import train_workflow
+from titanic.mlflow import mlflow_workflow
 
 
 def train():
-    data= load_data(train=True)
-    data = clean_data(data)
-    X, y = prepare_data(data, fit=True, survive=True)
-    model = train_model(X, y)
-    save_model(model, "best_model.pkl")
+    # data= load_data(train=True)
+    # data = clean_data(data)
+    X_train, X_test, y_train, y_test = data_workflow()
+    model = train_workflow(X_train, y_train)
+    mlflow_workflow(model, X_train, y_train, X_test, y_test)
     
-    
+if __name__ == "__main__":
+    train()

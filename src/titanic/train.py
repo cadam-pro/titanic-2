@@ -2,10 +2,13 @@
 Train the Titanic model.
 """
 import pandas as pd
+from prefect import flow, task
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
+from titanic.registry import save_model
 
+@task
 def train_model(X:pd.DataFrame, y:pd.Series) -> LogisticRegression:
     """ 
     Initiate the model and train it on the Titanic dataset.
@@ -28,5 +31,8 @@ def evaluate_model(  X_test: pd.DataFrame
             "precision": precision_score(y_test, model.predict(X_test)),
             "recall"   : recall_score(y_test, model.predict(X_test))}
 
-
-
+@flow
+def train_workflow(X, y):
+    model = train_model(X, y)
+    save_model(model, "best_model.pkl")
+    return model

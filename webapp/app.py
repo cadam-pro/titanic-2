@@ -1,5 +1,5 @@
 import streamlit as st
-import pandas as pd
+# import pandas as pd
 # from titanic.data import load_data, prepare_data, upload_data
 # import matplotlib.pyplot as plt
 # import seaborn as sns
@@ -17,23 +17,23 @@ st.markdown("""
 """)
 
 
-amount = st.slider("Select a number", min_value=0, max_value=100, value=50)
-if st.button("Click Me!") : 
-    params = {"amount": amount}
-    answer = requests.get(url = f"http://127.0.0.1:8000/love", params=params)
-    if answer.status_code == 200:
-        st.success(f"❤️ {answer.json()['love']}")
+# amount = st.slider("Select a number", min_value=0, max_value=100, value=50)
+# if st.button("Click Me!") : 
+#     params = {"amount": amount}
+#     answer = requests.get(url = f"http://127.0.0.1:8000/love", params=params)
+#     if answer.status_code == 200:
+#         st.success(f"❤️ {answer.json()['love']}")
 
-"### Add more functionality as needed."
-" # Dataframe Example"
+# "### Add more functionality as needed."
+# " # Dataframe Example"
 
-data = {
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [24, 30, 22],
-    'City': ['New York', 'Los Angeles', 'Chicago']
-}
-df = pd.DataFrame(data)
-st.dataframe(df)
+# data = {
+#     'Name': ['Alice', 'Bob', 'Charlie'],
+#     'Age': [24, 30, 22],
+#     'City': ['New York', 'Los Angeles', 'Chicago']
+# }
+# df = pd.DataFrame(data)
+# st.dataframe(df)
 
 # @st.cache_data
 # def load_data_app():
